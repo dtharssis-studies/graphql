@@ -1,4 +1,4 @@
-# Apis GraphQL com PHP
+# Apis GraphQL with PHP
 
 School: School of net
 

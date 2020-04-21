@@ -1,0 +1,45 @@
+version: '3'
+services:
+  hostiql:
+    image: nginx
+    hostname: hostiql
+    container_name: hostiql
+    ports:
+      - 8080:80
+    working_dir: /etc/nginx
+    volumes: 
+      - ../app:/app
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./logs/nginx:/var/log/nginx
+    restart: always
+
+  phpigl:
+    build: 
+      context: docker-files/php/
+      dockerfile: Dockerfile
+    image: phpigl
+    hostname: phpiql
+    container_name: phpiql
+    working_dir: /app
+    volumes: 
+      - ../app:/app
+    depends_on: 
+      - dbiql
+    links: 
+      - dbiql
+    restart: always
+  
+  dbiql:
+    image: mariadb:latest
+    hostname: dbiql
+    container_name: dbiql
+    ports: 
+      - "3306:3306"   
+    volumes: 
+      - ../../.data:/var/lib/mysql
+      - ./data/scripts:/home/scripts
+    environment:
+      MYSQL_ROOT_PASSWORD:  root
+      MYSQL_DATABASE: graphql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root      
